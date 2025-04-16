@@ -2,11 +2,10 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
-    
 jobs:
   test-backend:
     name: Test Back-end
@@ -26,9 +25,6 @@ jobs:
         run: |
           cd back
           mvn clean test jacoco:report
-
-
-
 
   test-frontend:
     name: Test Front-end
@@ -52,7 +48,6 @@ jobs:
         run: |
           cd front
           npm run test -- --watch=false --code-coverage --browsers=ChromeHeadless
-
 
   analyze:
     name: SonarCloud Analysis
@@ -91,31 +86,32 @@ jobs:
             -Dsonar.host.url=https://sonarcloud.io
             -Dsonar.java.binaries=back/target/classes
 
+  build-back:
+    name: Build & Push Backend Docker image
+    runs-on: ubuntu-latest
+    needs: [test-backend]
 
-    build-back:
-      name: Build & Push Backend Docker image
-      runs-on: ubuntu-latest
-      needs: [test-backend]
-      steps:
-        - uses: actions/checkout@v3
+    steps:
+      - uses: actions/checkout@v3
 
-        - uses: docker/setup-buildx-action@v3
+      - uses: docker/setup-buildx-action@v3
 
-        - uses: docker/login-action@v3
-          with:
+      - uses: docker/login-action@v3
+        with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-        - uses: docker/build-push-action@v5
-          with:
-            context: ./back
-            push: true
-            tags: ${{ secrets.DOCKER_USERNAME }}/back:latest
+      - uses: docker/build-push-action@v5
+        with:
+          context: ./back
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/back:latest
 
   build-front:
     name: Build & Push Frontend Docker image
     runs-on: ubuntu-latest
     needs: [test-frontend]
+
     steps:
       - uses: actions/checkout@v3
 
@@ -131,5 +127,3 @@ jobs:
           context: ./front
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/front:latest
-
-  
