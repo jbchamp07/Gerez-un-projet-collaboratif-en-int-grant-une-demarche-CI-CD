@@ -51,4 +51,4 @@ jobs:
       - name: Run tests with coverage
         run: |
           cd front
-          npm run test -- --watch=false --browsers=ChromeHeadless --no-sandbox --code-coverage
+          npm run test -- --watch=false --code-coverage --browsers=ChromeHeadless
