@@ -1,0 +1,45 @@
+jobs:
+  test-backend:
+    name: Test Back-end
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+
+      - name: Build and test back
+        run: |
+          cd backend
+          ./mvnw clean test jacoco:report
+
+
+
+
+  test-frontend:
+    name: Test Front-end
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: |
+          cd front
+          npm install
+
+      - name: Run tests with coverage
+        run: |
+          cd front
+          npm run test -- --watch=false --code-coverage
