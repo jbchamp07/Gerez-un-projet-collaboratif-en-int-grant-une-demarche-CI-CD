@@ -1,0 +1,3 @@
+sonar.organization=jbchampkey
+sonar.projectKey=jbchamp07_Gerez-un-projet-collaboratif-en-int-grant-une-demarche-CI-CD
+sonar.sources=.
