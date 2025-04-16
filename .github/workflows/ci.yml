@@ -24,7 +24,7 @@ jobs:
 
       - name: Build and test back
         run: |
-          cd backend
+          cd back
           ./mvnw clean test jacoco:report
 
 
