@@ -27,7 +27,7 @@ jobs:
           mvn clean test jacoco:report
 
   analyze:
-    name: SonarCloud Analysis (back)
+    name: SonarCloud Analysis (back-end)
     runs-on: ubuntu-latest
 
     steps:
