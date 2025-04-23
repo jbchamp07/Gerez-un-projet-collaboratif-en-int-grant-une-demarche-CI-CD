@@ -32,7 +32,7 @@ jobs:
           npm run test -- --watch=false --code-coverage --browsers=ChromeHeadless
 
   analyze:
-  name: SonarCloud Analysis (front)
+  name: SonarCloud Analysis (front-end)
   runs-on: ubuntu-latest
 
   steps:
