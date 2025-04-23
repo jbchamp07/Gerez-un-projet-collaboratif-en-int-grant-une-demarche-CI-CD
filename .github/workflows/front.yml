@@ -32,35 +32,35 @@ jobs:
           npm run test -- --watch=false --code-coverage --browsers=ChromeHeadless
 
   analyze:
-  name: SonarCloud Analysis (front-end)
-  runs-on: ubuntu-latest
+    name: SonarCloud Analysis (front-end)
+    runs-on: ubuntu-latest
 
-  steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Setup Node
-      uses: actions/setup-node@v3
-      with:
-        node-version: '18'
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
 
-    - name: Install front-end dependencies
-      run: |
-        cd front
-        npm install
+      - name: Install front-end dependencies
+        run: |
+          cd front
+          npm install
 
-    - name: SonarCloud Scan
-      uses: SonarSource/sonarqube-scan-action@v5.0.0
-      env:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      with:
-        args: >
-          -Dsonar.projectKey=jbchamp07_Gerez-un-projet-collaboratif-en-int-grant-une-demarche-CI-CD
-          -Dsonar.organization=jbchampkey
-          -Dsonar.host.url=https://sonarcloud.io
-          -Dsonar.sources=front/src
-          -Dsonar.inclusions=**/*.ts,**/*.js,**/*.jsx,**/*.tsx,**/*.vue,**/*.html,**/*.css
-          -Dsonar.exclusions=**/node_modules/**
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarqube-scan-action@v5.0.0
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.projectKey=jbchamp07_Gerez-un-projet-collaboratif-en-int-grant-une-demarche-CI-CD
+            -Dsonar.organization=jbchampkey
+            -Dsonar.host.url=https://sonarcloud.io
+            -Dsonar.sources=front/src
+            -Dsonar.inclusions=**/*.ts,**/*.js,**/*.jsx,**/*.tsx,**/*.vue,**/*.html,**/*.css
+            -Dsonar.exclusions=**/node_modules/**
 
   build-front:
     name: Build & Push Frontend Docker image
