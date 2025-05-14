@@ -35,7 +35,7 @@ jobs:
 
       - name: Run frontend tests (with coverage)
         working-directory: front
-        run: npm test -- --watch=false --code-coverage --browsers=ChromeHeadless
+        run: ng test --code-coverage --browsers=ChromeHeadless --watch=false
 
       - name: Check lcov.info path
         run: ls -R front/coverage
