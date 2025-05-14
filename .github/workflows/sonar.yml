@@ -61,5 +61,8 @@ jobs:
         uses: SonarSource/sonarcloud-github-action@v2
         with:
           projectBaseDir: .
+          args: >
+            -Dsonar.projectKey=jbchamp07_Gerez-un-projet-collaboratif-en-int-grant-une-demarche-CI-CD
+            -Dsonar.organization=jbchampkey
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
