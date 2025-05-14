@@ -37,6 +37,9 @@ jobs:
         working-directory: front
         run: npm test -- --watch=false --code-coverage --browsers=ChromeHeadless
 
+      - name: Check lcov.info path
+        run: ls -R front/coverage
+
       # Backend
       - name: Setup Java
         uses: actions/setup-java@v4
