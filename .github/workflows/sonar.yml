@@ -7,27 +7,60 @@ on:
     branches: [main]
 
 jobs:
-  build-and-analyze:
-    name: Build & Analyze with SonarCloud
+
+  analyze-back:
+    name: SonarCloud Analysis (back-end)
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      # Setup Node.js for Frontend
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
         with:
-          node-version: 22.x
-          cache: 'npm'
-          cache-dependency-path: front/package-lock.json
+          java-version: '17'
+          distribution: 'temurin'
 
-      - name: Install frontend dependencies
-        working-directory: front
-        run: npm ci
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
+      - name: Build backend (to generate .class files)
+        run: |
+          cd back
+          mvn clean verify
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarqube-scan-action@v5.0.0
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.projectKey=jbchamp07_Gerez-un-projet-collaboratif-en-int-grant-une-demarche-CI-CD
+            -Dsonar.organization=jbchampkey
+            -Dsonar.host.url=https://sonarcloud.io
+            -Dsonar.java.binaries=back/target/classes
+  analyze-front:
+    name: SonarCloud Analysis (front-end)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install front-end dependencies
+        run: |
+          cd front
+          npm install
 
       - name: Build frontend
         working-directory: front
@@ -37,28 +70,16 @@ jobs:
         working-directory: front
         run: npm test -- --watch=false --code-coverage
 
-      # Setup Java for Backend
-      - name: Setup Java 11
-        uses: actions/setup-java@v4
-        with:
-          java-version: '11'
-          distribution: 'temurin'
-
-      - name: Cache Maven
-        uses: actions/cache@v4
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
-
-      - name: Build backend & generate coverage
-        working-directory: back
-        run: mvn clean verify
-
-      # Run SonarCloud analysis
+      
       - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@v2
-        with:
-          projectBaseDir: .
+        uses: SonarSource/sonarqube-scan-action@v5.0.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.projectKey=jbchamp07_Gerez-un-projet-collaboratif-en-int-grant-une-demarche-CI-CD
+            -Dsonar.organization=jbchampkey
+            -Dsonar.host.url=https://sonarcloud.io
+            -Dsonar.sources=front/src
+            -Dsonar.inclusions=**/*.ts,**/*.js,**/*.jsx,**/*.tsx,**/*.vue,**/*.html,**/*.css
+            -Dsonar.exclusions=**/node_modules/**
