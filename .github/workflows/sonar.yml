@@ -36,7 +36,7 @@ jobs:
 
       - name: Run frontend tests (with coverage)
         working-directory: front
-        run: npm test -- --watch=false --code-coverage
+        run: npm test -- --watch=false --code-coverage --browsers=ChromeHeadless
 
       # Setup Java for Backend
       - name: Setup Java 11
