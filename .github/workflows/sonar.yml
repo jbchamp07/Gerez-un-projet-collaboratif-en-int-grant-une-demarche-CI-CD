@@ -31,16 +31,13 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-      - name: Build backend & run tests (with coverage)
+      - name: Build & analyze backend with SonarCloud
         working-directory: back
-        run: mvn clean verify
-
-      - name: SonarCloud Scan (Back)
-        uses: SonarSource/sonarcloud-github-action@v2
-        with:
-          projectBaseDir: back
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: mvn verify sonar:sonar \
+          -Dsonar.projectKey=jbchamp07_Gerez-un-projet-collaboratif-en-int-grant-une-demarche-CI-CD \
+          -Dsonar.organization=jbchampkey \
+          -Dsonar.host.url=https://sonarcloud.io \
+          -Dsonar.login=${{ secrets.SONAR_TOKEN }}
 
   analyze-front:
     name: SonarCloud - Front-End
@@ -69,7 +66,7 @@ jobs:
 
       - name: Run frontend tests (with coverage)
         working-directory: front
-        run: npm test -- --watch=false --code-coverage
+        run: npm test -- --watch=false --code-coverage --browsers=ChromeHeadless
 
       - name: SonarCloud Scan (Front)
         uses: SonarSource/sonarcloud-github-action@v2
