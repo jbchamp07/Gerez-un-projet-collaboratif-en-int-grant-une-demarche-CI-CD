@@ -1,10 +1,10 @@
 name: SonarCloud Quality Check
 
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+on: 
+  workflow_call:
+    secrets:
+        SONAR_TOKEN:
+          required: true
 
 jobs:
   build-and-analyze:
@@ -35,7 +35,7 @@ jobs:
 
       - name: Run frontend tests (with coverage)
         working-directory: front
-        run: npm test -- --watch=false --code-coverage --browsers=ChromeHeadless
+        run: npm test -- --watch=false --code-coverage
 
       # Setup Java for Backend
       - name: Setup Java 11
@@ -60,9 +60,5 @@ jobs:
         uses: SonarSource/sonarcloud-github-action@v2
         with:
           projectBaseDir: .
-          args: >
-            -Dsonar.projectKey=jbchamp07_Gerez-un-projet-collaboratif-en-int-grant-une-demarche-CI-CD
-            -Dsonar.organization=jbchamp07
-            -Dsonar.java.binaries=back/target/classes
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
