@@ -1,0 +1,50 @@
+name: back
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test-backend:
+    name: Test Back-end
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+
+      - name: Build and test back
+        run: |
+          cd back
+          mvn clean test jacoco:report
+
+  build-back:
+    name: Build & Push Backend Docker image
+    runs-on: ubuntu-latest
+    needs: [test-backend]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - uses: docker/build-push-action@v5
+        with:
+          context: ./back
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/back:latest
+
+  
