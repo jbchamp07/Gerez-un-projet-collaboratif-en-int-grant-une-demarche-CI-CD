@@ -62,7 +62,7 @@ jobs:
           projectBaseDir: .
           args: >
             -Dsonar.projectKey=jbchamp07_Gerez-un-projet-collaboratif-en-int-grant-une-demarche-CI-CD
-            -Dsonar.organization=jbchampkey
+            -Dsonar.organization=jbchamp07
             -Dsonar.java.binaries=back/target/classes
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
