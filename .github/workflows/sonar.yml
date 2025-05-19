@@ -1,10 +1,10 @@
 name: SonarCloud Quality Check
 
-on: 
-  workflow_call:
-    secrets:
-        SONAR_TOKEN:
-          required: true
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
   build-and-analyze:
